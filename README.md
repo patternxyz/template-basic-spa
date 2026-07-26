@@ -70,7 +70,9 @@ export WIF_PROVIDER_ID="github-provider"
 The script enables the required Google Cloud APIs, creates the Artifact Registry
 repository and deployer service account when needed, grants its deployment roles,
 and configures a Workload Identity provider restricted to this repository's
-`dev` branch. Re-running it with the same values is safe.
+`dev` branch. The deployer receives `roles/run.admin`, including the
+`run.services.setIamPolicy` permission required by `gcloud run services update
+... --no-invoker-iam-check`. Re-running the script with the same values is safe.
 
 ### 2. Configure the GitHub environment
 
@@ -84,11 +86,28 @@ Environment variables:
 - `GCP_REGION`
 - `ARTIFACT_REGISTRY_REPOSITORY`
 - `CLOUD_RUN_SERVICE`
+- `DB_SSL` (normally `true` for a hosted PostgreSQL database)
+- `DB_SYNCHRONIZE` (use `false` in production)
 
 Environment secrets:
 
 - `GCP_WIF_PROVIDER`
 - `GCP_WIF_SERVICE_ACCOUNT`
+
+Also add `DATABASE_URL` as a repository secret under **Settings → Secrets and
+variables → Actions**. Its value must be the PostgreSQL connection URL that the
+deployed Cloud Run service will use. The Build workflow passes this secret to the
+reusable Deploy workflow, which configures it as the service's `DATABASE_URL`
+environment variable. The Deploy workflow also configures `DB_SSL` and
+`DB_SYNCHRONIZE` from the corresponding `dev` environment variables. Cloud Run
+provides `PORT` automatically, so it should not be configured in GitHub.
+
+With the GitHub CLI, create the repository secret from a local environment
+variable without printing its value:
+
+```sh
+gh secret set DATABASE_URL --body "$DATABASE_URL"
+```
 
 The script also prints ready-to-run `gh variable set` and `gh secret set`
 commands. If using those commands, first install and authenticate the GitHub CLI:

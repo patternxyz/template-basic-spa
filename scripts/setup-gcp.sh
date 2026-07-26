@@ -83,6 +83,9 @@ fi
 retry 12 5 gcloud iam service-accounts describe "${DEPLOY_SERVICE_ACCOUNT_EMAIL}" \
   --project "${GCP_PROJECT_ID}" >/dev/null
 
+# Cloud Run Admin includes run.services.create, run.services.update, and
+# run.services.setIamPolicy. The last permission is required to run
+# `gcloud run services update ... --no-invoker-iam-check`.
 for role in \
   roles/run.admin \
   roles/artifactregistry.writer \
@@ -132,6 +135,7 @@ echo
 echo "GCP setup complete."
 echo "Cloud Run service: ${CLOUD_RUN_SERVICE} (${GCP_REGION})"
 echo "Artifact Registry: ${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/${ARTIFACT_REGISTRY_REPOSITORY}"
+echo "Deployer can update the service and disable the Invoker IAM check (roles/run.admin)."
 echo
 echo "Set these GitHub dev environment variables:"
 echo "  GCP_PROJECT_ID=${GCP_PROJECT_ID}"
