@@ -12,11 +12,8 @@ Use the latest stable, mutually compatible package versions. Set an appropriate 
 - React with TypeScript
 - Vite as the build tool
 - Tailwind CSS v4 using the official Vite plugin
-- shadcn initialized through its official CLI
-- Keep the shadcn setup minimal:
-  - install only the component used by the initial page
-  - remove unused components and dependencies created by initialization
-- Minimal initial UI: one page containing a small shadcn Card that displays the result of a request to `GET /api/hello`
+- Use Tailwind utilities directly for styling without a component library
+- Initial landing UI: a responsive app shell with navigation, a hero introducing the SPA template, a concise technology overview, an API status section that displays the result of `GET /api/hello`, and a footer
 - Show a compact loading state and a compact failure message
 - Configure the Vite development server to proxy `/api` to the backend
 - Configure the `@/*` import alias for `src/*`
