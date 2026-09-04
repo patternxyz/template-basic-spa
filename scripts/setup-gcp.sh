@@ -116,7 +116,7 @@ if ! gcloud iam workload-identity-pools providers describe "${WIF_PROVIDER_ID}" 
     --project "${GCP_PROJECT_ID}" \
     --location global \
     --workload-identity-pool "${WIF_POOL_ID}" \
-    --display-name "GitHub ${GITHUB_REPOSITORY_FULL_NAME}" \
+    --display-name "GitHub Actions" \
     --issuer-uri "https://token.actions.githubusercontent.com" \
     --attribute-mapping "google.subject=assertion.sub,attribute.repository=assertion.repository,attribute.ref=assertion.ref" \
     --attribute-condition "assertion.repository=='${GITHUB_REPOSITORY_FULL_NAME}' && assertion.ref=='refs/heads/${GITHUB_BRANCH}'"

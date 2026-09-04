@@ -65,5 +65,4 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     with:
       image: ${{ needs.build.outputs.image }}
-    secrets:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    secrets: inherit

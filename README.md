@@ -72,7 +72,9 @@ repository and deployer service account when needed, grants its deployment roles
 and configures a Workload Identity provider restricted to this repository's
 `dev` branch. The deployer receives `roles/run.admin`, including the
 `run.services.setIamPolicy` permission required by `gcloud run services update
-... --no-invoker-iam-check`. Re-running the script with the same values is safe.
+... --no-invoker-iam-check`. The deployment workflow uses that flag so the SPA
+is publicly accessible without Cloud Run authentication. Re-running the script
+with the same values is safe.
 
 ### 2. Configure the GitHub environment
 
@@ -96,8 +98,9 @@ Environment secrets:
 
 Also add `DATABASE_URL` as a repository secret under **Settings → Secrets and
 variables → Actions**. Its value must be the PostgreSQL connection URL that the
-deployed Cloud Run service will use. The Build workflow passes this secret to the
-reusable Deploy workflow, which configures it as the service's `DATABASE_URL`
+deployed Cloud Run service will use. The Build workflow inherits its secrets into
+the reusable Deploy workflow, including the Workload Identity Federation secrets
+and `DATABASE_URL`; the latter is configured as the service's `DATABASE_URL`
 environment variable. The Deploy workflow also configures `DB_SSL` and
 `DB_SYNCHRONIZE` from the corresponding `dev` environment variables. Cloud Run
 provides `PORT` automatically, so it should not be configured in GitHub.
@@ -143,5 +146,5 @@ the **Re-run jobs** control in GitHub Actions or run:
 gh run rerun RUN_ID --failed
 ```
 
-When deployment succeeds, the workflow summary links to the deployed Cloud Run
-service URL.
+When deployment succeeds, the workflow summary links to the publicly accessible
+Cloud Run service URL.

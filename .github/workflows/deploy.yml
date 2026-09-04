@@ -43,6 +43,7 @@ jobs:
           region: ${{ vars.GCP_REGION }}
           service: ${{ vars.CLOUD_RUN_SERVICE }}
           image: ${{ inputs.image }}
+          flags: "--no-invoker-iam-check"
           env_vars: |
             DATABASE_URL=${{ secrets.DATABASE_URL }}
             DB_SSL=${{ vars.DB_SSL }}
